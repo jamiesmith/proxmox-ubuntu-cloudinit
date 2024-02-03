@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# curl -s "https://raw.githubusercontent.com/jamiesmith/proxmox-ubuntu-cloudinit/main/setup_ubuntu_cloudimg_template.sh?$(date +%s)" | /bin/bash -s
+# curl -s "https://raw.githubusercontent.com/jamiesmith/proxmox-ubuntu-cloudinit/main/create-ubuntu-cloud-template.sh?$(date +%s)" | /bin/bash -s
 
 # qm stop 9000 --skiplock && qm destroy 9000 --destroy-unreferenced-disks --purge
 
