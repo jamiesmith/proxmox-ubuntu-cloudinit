@@ -1,5 +1,33 @@
 #!/bin/bash
 
+function die_usage
+{
+    echo "Usage: $0 [-d disk] [-m memory] [name]"
+    echo " -d disk (like, 10G)"
+    echo " -m memory (bytes)"
+    echo " -n name"
+    echo "$*"
+    exit 9
+}
+MEMORY=2048
+DISK=10G
+
+while getopts "d:m:" option
+do
+    case $option in
+    d)
+        DISK=$OPTARG
+        ;;
+    m)
+        MEMORY=$OPTARG
+        ;;
+	*)
+	    die_usage "Wrong arg $option"
+        
+    esac
+done
+shift `expr $OPTIND - 1`
+
 vmid=$(pvesh get /cluster/nextid)
 
 eval export $(cat .cloudimage.env)
@@ -16,6 +44,9 @@ fi
 echo "creating [$vm_hostname] ($vmid)"
 
 qm clone $CLOUD_INIT_VM_ID $vmid --name $vm_hostname --full --storage local-zfs
+qm resize $vmid scsi0 +"${DISK}"
+qm set $vmid --memory "${MEMORY}"
+
 qm start $vmid
 
 echo "Started $vm_hostname ($vmid)"
@@ -39,5 +70,5 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
     BOOT_COMPLETE=$(qm guest exec $vmid -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
 
-echo "You can now use $vm_hostname"
+echo "You can now use $vm_hostname ($vmid)"
 echo "ssh -o StrictHostKeyChecking=no -i "$CLOUD_INIT_PRIVATE_KEY_FILE" ${CLOUD_INIT_USERNAME}@${vm_hostname}"
