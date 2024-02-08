@@ -12,8 +12,9 @@ function die_usage
 MEMORY=2048
 DISK=10G
 CORES=4
+IP_ADDR=""
 
-while getopts "c:d:m:" option
+while getopts "c:d:i:m:" option
 do
     case $option in
     c)
@@ -21,6 +22,9 @@ do
         ;;
     d)
         DISK=$OPTARG
+        ;;
+    i)
+        IP_ADDR=$OPTARG
         ;;
     m)
         MEMORY=$OPTARG
@@ -49,8 +53,15 @@ echo "creating [$vm_hostname] ($vmid)"
 
 qm clone $CLOUD_INIT_VM_ID $vmid --name $vm_hostname --full --storage local-zfs
 qm resize $vmid scsi0 +"${DISK}"
-qm set $vmid --memory "${MEMORY}"
-qm set $vmid --cores "${CORES}"
+qm set $vmid --memory "${MEMORY}" --cores "${CORES}"
+
+SSH_HOST=$vm_hostname
+if [ -n "$IP_ADDR" ]
+then
+    echo "Setting the IP to gw=192.168.1.1,ip=$IP_ADDR"
+    qm set $vmid --ipconfig0 gw=192.168.100.1,ip=${IP_ADDR}/24 --nameserver 192.168.1.80
+    SSH_HOST=$IP_ADDR
+fi
 
 qm start $vmid
 
@@ -75,5 +86,6 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
     BOOT_COMPLETE=$(qm guest exec $vmid -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
 
-echo "You can now use $vm_hostname ($vmid)"
-echo "ssh -o StrictHostKeyChecking=no -i "$CLOUD_INIT_PRIVATE_KEY_FILE" ${CLOUD_INIT_USERNAME}@${vm_hostname}"
+host
+echo "You can now use $SSH_HOST ($vmid)"
+echo "ssh -o StrictHostKeyChecking=no -i "$CLOUD_INIT_PRIVATE_KEY_FILE" ${CLOUD_INIT_USERNAME}@${SSH_HOST}"

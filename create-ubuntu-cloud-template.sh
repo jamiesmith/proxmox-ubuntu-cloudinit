@@ -11,7 +11,7 @@ then
     echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_rsa_cloudinit.pub)' >> .cloudimage.env
     echo 'CLOUD_INIT_PRIVATE_KEY_FILE=~/.ssh/id_rsa_cloudinit' >> .cloudimage.env
     echo 'CLOUD_INIT_VM_ID=${CLOUD_INIT_VM_ID:-9000}' >> .cloudimage.env
-    echo 'VM_STORAGE=${VM_STORAGE:-cephpool01}' >> .cloudimage.env
+    echo 'VM_STORAGE=${VM_STORAGE:-local-zfs}' >> .cloudimage.env
     echo 'VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}' >> .cloudimage.env
     echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> .cloudimage.env
     echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> .cloudimage.env
@@ -104,7 +104,7 @@ qm set $CLOUD_INIT_VM_ID --scsi1 $VM_STORAGE:cloudinit
 qm set $CLOUD_INIT_VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=0,efitype=4m,size=528K
 qm set $CLOUD_INIT_VM_ID --boot c --bootdisk scsi0 --ostype l26
 qm set $CLOUD_INIT_VM_ID --onboot 1
-qm resize $CLOUD_INIT_VM_ID scsi0 +10G
+qm resize $CLOUD_INIT_VM_ID scsi0 +4G
 
 qm set $CLOUD_INIT_VM_ID --serial0 socket #--vga serial0
 qm set $CLOUD_INIT_VM_ID --ipconfig0 ip=dhcp
