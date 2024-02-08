@@ -11,10 +11,14 @@ function die_usage
 }
 MEMORY=2048
 DISK=10G
+CORES=4
 
-while getopts "d:m:" option
+while getopts "c:d:m:" option
 do
     case $option in
+    c)
+        CORES=$OPTARG
+        ;;
     d)
         DISK=$OPTARG
         ;;
@@ -46,6 +50,7 @@ echo "creating [$vm_hostname] ($vmid)"
 qm clone $CLOUD_INIT_VM_ID $vmid --name $vm_hostname --full --storage local-zfs
 qm resize $vmid scsi0 +"${DISK}"
 qm set $vmid --memory "${MEMORY}"
+qm set $vmid --cores "${CORES}"
 
 qm start $vmid
 
