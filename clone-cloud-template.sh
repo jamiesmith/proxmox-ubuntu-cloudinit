@@ -15,7 +15,7 @@ fi
 # [ $vmid = 1 ] && vmid=100
 echo "creating [$vm_hostname] ($vmid)"
 
-qm clone $CLOUD_INIT_VM_ID $vmid --name $vm_hostname --full
+qm clone $CLOUD_INIT_VM_ID $vmid --name $vm_hostname --full --storage local-zfs
 qm start $vmid
 
 echo "Started $vm_hostname ($vmid)"

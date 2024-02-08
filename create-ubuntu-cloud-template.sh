@@ -11,7 +11,7 @@ then
     echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_rsa_cloudinit.pub)' >> .cloudimage.env
     echo 'CLOUD_INIT_PRIVATE_KEY_FILE=~/.ssh/id_rsa_cloudinit' >> .cloudimage.env
     echo 'CLOUD_INIT_VM_ID=${CLOUD_INIT_VM_ID:-9000}' >> .cloudimage.env
-    echo 'VM_STORAGE=${VM_STORAGE:-local-zfs}' >> .cloudimage.env
+    echo 'VM_STORAGE=${VM_STORAGE:-cephpool01}' >> .cloudimage.env
     echo 'VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}' >> .cloudimage.env
     echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> .cloudimage.env
     echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> .cloudimage.env
