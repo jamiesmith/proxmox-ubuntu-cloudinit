@@ -5,7 +5,6 @@ function die_usage
     echo "Usage: $0 [-d disk] [-m memory] [name]"
     echo " -d disk (like, 10G)"
     echo " -m memory (bytes)"
-    echo " -n name"
     echo "$*"
     exit 9
 }
