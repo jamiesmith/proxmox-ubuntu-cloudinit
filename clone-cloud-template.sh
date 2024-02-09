@@ -86,6 +86,5 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
     BOOT_COMPLETE=$(qm guest exec $vmid -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
 
-host
 echo "You can now use $SSH_HOST ($vmid)"
 echo "ssh -o StrictHostKeyChecking=no -i "$CLOUD_INIT_PRIVATE_KEY_FILE" ${CLOUD_INIT_USERNAME}@${SSH_HOST}"
