@@ -1,0 +1,9 @@
+k3s-kirk-control 192.168.100.201
+k3s-kirk-worker-0 192.168.100.202
+k3s-kirk-worker-1 192.168.100.203
+k3s-spock-control 192.168.100.209
+k3s-spock-worker-0 192.168.100.210
+k3s-spock-worker-1 192.168.100.211
+k3s-bones-control 192.168.100.217
+k3s-bones-worker-0 192.168.100.218
+k3s-bones-worker-1 192.168.100.219
