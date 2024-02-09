@@ -55,6 +55,9 @@ runcmd:
   - systemctl enable unattended-upgrades.service
   - systemctl start unattended-upgrades.service
   - systemctl daemon-reload
+  - sed -i 's|#DNSStubListener=yes|DNSStubListener=no|' /etc/systemd/resolved.conf 
+  - rm /etc/resolv.conf
+  - ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
   - touch /home/$CLOUD_INIT_USERNAME/.sudo_as_admin_successful
   - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id

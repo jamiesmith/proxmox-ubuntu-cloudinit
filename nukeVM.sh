@@ -2,6 +2,6 @@
 
 for vmid in $*
 do
-    qm stop $1
-    qm destroy $1
+    qm stop $vmid
+    qm destroy $vmid
 done
