@@ -1,12 +1,12 @@
 #!/bin/bash
 
-WORKER_NODE_RAM=32768
+WORKER_NODE_RAM=24576
 WORKER_NODE_DISK=256G
-WORKER_NODE_CORES=8
+WORKER_NODE_CORES=4
 
 CONTROL_NODE_RAM=8192
 CONTROL_NODE_DISK=64G
-CONTROL_NODE_CORES=4
+CONTROL_NODE_CORES=2
 
 hosts="kirk spock bones"
 
@@ -23,6 +23,16 @@ WORKER_NODE_COUNT=2
 HOSTFILE=hosts.tmp
 rm -f ${HOSTFILE}
 
+function divider
+{
+    cat << EOF
+#######################################################    
+# $*
+#######################################################    
+EOF
+}
+
+
 for host in $hosts
 do
     count=0
@@ -34,6 +44,9 @@ do
         then
             hostname="${hostname}-${count}"
         fi
+        
+        divider "creating host $hostname"
+        
         ssh root@${host} "cd proxmox-ubuntu-cloudinit && ./clone-cloud-template.sh -c ${CONTROL_NODE_CORES} \
             -m ${CONTROL_NODE_RAM} \
             -d ${CONTROL_NODE_DISK} \
@@ -65,4 +78,9 @@ do
     ((IP+=5))
 done
 
+echo "Hosts file for PiHole DNS:"
 cat ${HOSTFILE}
+
+echo ""
+echo "Commands to clear out known_host entries:"
+awk '{printf("ssh-keygen -R %s\n}", $2)}' ${HOSTFILE}

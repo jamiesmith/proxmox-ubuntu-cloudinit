@@ -1,0 +1,114 @@
+- hosts: "*"
+  become: yes
+  tasks:
+    - name: Add the non-free-firmware to update microcode
+      ansible.builtin.lineinfile:
+        path: /etc/apt/sources.list
+        insertbefore: 'BOF'
+        state: present
+        line: 'deb http://ftp.debian.org/debian bookworm main contrib non-free-firmware'
+
+    - name: Add the pve-no-subs to the sources (pve-no-enterprise.list)
+      ansible.builtin.lineinfile:
+        path: /etc/apt/sources.list.d/pve-no-enterprise.list
+        line: deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+        create: yes
+
+    - name: Disable ceph enterprise
+      replace:
+        backup: no
+        dest: /etc/apt/sources.list.d/ceph.list
+        regexp: '^deb https://'
+        replace: '# deb https://'
+
+    - name: Disable PVE enterprise
+      replace:
+        backup: no
+        dest: /etc/apt/sources.list.d/pve-enterprise.list
+        regexp: '^deb https://'
+        replace: '# deb https://'
+
+    - name: Turn off Split Lock Detect
+      replace:
+        backup: yes
+        dest: /etc/kernel/cmdline
+        regexp: '^(.*boot=zfs(?!.*\bsplit_lock_detect=off\b).*)$'
+        replace: '\1 split_lock_detect=off'
+  
+    # It would be nice to not have to run this unless the above changes something
+    - name: Refresh the boot tool command
+      ansible.builtin.command: /usr/sbin/proxmox-boot-tool refresh
+    
+    - name: apt
+      apt:
+        update_cache: yes
+        upgrade: 'yes'
+
+    - name: Upgrade the OS (apt-get dist-upgrade)
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: install standard proxmox programs
+      apt:
+        pkg: 
+            - emacs
+            - jq
+            - rig
+            - git
+            - intel-microcode
+            - lm-sensors
+            - silversearcher-ag
+            - iftop
+        state: latest
+
+    - name: Clone UnixEnv
+      git:
+        repo: https://github.com/jamiesmith/UnixEnv.git
+        dest: /root/UnixEnv
+        clone: yes
+        update: yes
+
+    - name: Clone pve-nag-buster
+      git:
+        repo: https://github.com/foundObjects/pve-nag-buster.git
+        dest: /root/pve-nag-buster
+        clone: yes
+        update: yes
+
+    - name: Clone Proxmox Cloud Init
+      git:
+        repo: https://github.com/jamiesmith/proxmox-ubuntu-cloudinit.git
+        dest: /root/proxmox-ubuntu-cloudinit
+        clone: yes
+        update: yes
+
+    - name: Add the proxmox aliases to bashrc
+      ansible.builtin.lineinfile:
+        path: /root/.bashrc
+        insertafter: 'EOF'
+        state: present
+        line: 'source ~/UnixEnv/_proxmox.alias'
+
+    - name: Symbolic link for emacs
+      file:
+        src: "/root/UnixEnv/_emacs"
+        dest: "/root/.emacs"
+        state: link
+
+    - name: Symbolic link for emacsEnv
+      file:
+        src: "/root/UnixEnv/_emacsEnv"
+        dest: "/root/.emacsEnv"
+        state: link
+
+    - name: Nag buster- run twice (1)
+      ansible.builtin.shell: ./pve-nag-buster.sh
+      args:
+        chdir: /root/pve-nag-buster
+
+    - name: Nag buster- run twice (2)
+      ansible.builtin.shell: ./pve-nag-buster.sh
+      args:
+        chdir: /root/pve-nag-buster
+
+            
