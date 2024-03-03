@@ -14,19 +14,35 @@
         line: deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
         create: yes
 
+    - stat: path=/etc/apt/sources.list.d/ceph.list
+      register: cephentstatus
     - name: Disable ceph enterprise
       replace:
         backup: no
         dest: /etc/apt/sources.list.d/ceph.list
         regexp: '^deb https://'
         replace: '# deb https://'
+      when: cephentstatus.stat.exists
 
+    - stat: path=/etc/apt/sources.list.d/pve-enterprise.list
+      register: pveentstatus
     - name: Disable PVE enterprise
       replace:
         backup: no
-        dest: /etc/apt/sources.list.d/pve-enterprise.list
+        dest: '/etc/apt/sources.list.d/pve-enterprise.list'
         regexp: '^deb https://'
         replace: '# deb https://'
+      when: pveentstatus.stat.exists
+
+    - stat: path=/etc/apt/sources.list.d/pve-enterprise.list
+      register: pveentstatus
+    - name: Disable PVE enterprise
+      replace:
+        backup: no
+        dest: '/etc/apt/sources.list.d/pve-enterprise.list'
+        regexp: '^deb https://'
+        replace: '# deb https://'
+      when: pveentstatus.stat.exists
 
     - name: Turn off Split Lock Detect
       replace:
@@ -59,6 +75,7 @@
             - lm-sensors
             - silversearcher-ag
             - iftop
+            - nut
         state: latest
 
     - name: Clone UnixEnv
@@ -101,12 +118,12 @@
         dest: "/root/.emacsEnv"
         state: link
 
-    - name: Nag buster- run twice (1)
+    - name: Nag Buster! run twice (1)
       ansible.builtin.shell: ./pve-nag-buster.sh
       args:
         chdir: /root/pve-nag-buster
 
-    - name: Nag buster- run twice (2)
+    - name: Nag Buster! run twice (2)
       ansible.builtin.shell: ./pve-nag-buster.sh
       args:
         chdir: /root/pve-nag-buster
