@@ -83,4 +83,4 @@ cat ${HOSTFILE}
 
 echo ""
 echo "Commands to clear out known_host entries:"
-awk '{printf("ssh-keygen -R %s\n}", $2)}' ${HOSTFILE}
+awk '{printf("ssh-keygen -R %s\n", $2)}' ${HOSTFILE}
