@@ -128,4 +128,11 @@
       args:
         chdir: /root/pve-nag-buster
 
-            
+    - name: Set vmbr0 to vlan-aware mtu configuration value to 8000
+      community.general.interfaces_file:
+        dest: /etc/network/interfaces
+        iface: vmbr0
+        option: bridge-vlan-aware
+        value: 'yes'
+        backup: true
+        state: present
