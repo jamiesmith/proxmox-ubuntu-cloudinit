@@ -63,6 +63,16 @@ runcmd:
   - rm /var/lib/dbus/machine-id
   - ln -s /etc/machine-id  /var/lib/dbus/machine-id
   - fstrim -av
+  - cd /home/$CLOUD_INIT_USERNAME/
+  - git clone https://github.com/jamiesmith/UnixEnv.git
+  - rm .profile .bashrc
+  - cd UnixEnv
+  - ./link-env.sh /home/$CLOUD_INIT_USERNAME/
+  - cd /home/$CLOUD_INIT_USERNAME/
+  - mkdir bin
+  - cd bin
+  - git clone https://github.com/jamiesmith/findgrep.git
+#  - chown -R $CLOUD_INIT_USERNAME:$CLOUD_INIT_USERNAME /home/$CLOUD_INIT_USERNAME/
 
 network:
   version: 2

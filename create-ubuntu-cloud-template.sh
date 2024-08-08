@@ -50,10 +50,10 @@ then
 fi
 
 
-if [[ ! -f /tmp/jammy-server-cloudimg-amd64.img ]]
+if [[ ! -f /tmp/noble-server-cloudimg-amd64.img ]]
 then
     echo "downloading cloudimg file..."
-    curl -s https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img > /tmp/jammy-server-cloudimg-amd64.img
+    curl -s https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img > /tmp/noble-server-cloudimg-amd64.img
 fi
 
 mkdir -p /var/lib/vz/snippets/
@@ -93,7 +93,7 @@ echo "creating new VM..."
 qm create $CLOUD_INIT_VM_ID --memory 2048 --cores 4 --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0,tag=100
 
 echo "importing cloudimg $VM_STORAGE storage..."
-qm importdisk $CLOUD_INIT_VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE --format qcow2 | grep -v 'transferred'
+qm importdisk $CLOUD_INIT_VM_ID /tmp/noble-server-cloudimg-amd64.img $VM_STORAGE --format qcow2 | grep -v 'transferred'
 
 # finally attach the new disk to the VM as scsi drive
 echo "setting vm options..."

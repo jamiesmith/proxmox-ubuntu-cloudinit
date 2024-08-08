@@ -75,6 +75,7 @@
             - lm-sensors
             - silversearcher-ag
             - iftop
+            - iperf3
             - nut
         state: latest
 
