@@ -51,7 +51,7 @@ fi
 # [ $vmid = 1 ] && vmid=100
 echo "creating [$vm_hostname] ($vmid)"
 
-qm clone $CLOUD_INIT_VM_ID $vmid --name $vm_hostname --full --storage local-zfs
+qm clone $CLOUD_INIT_VM_ID $vmid --name $vm_hostname --full --storage ${VM_STORAGE}
 qm resize $vmid scsi0 +"${DISK}"
 qm set $vmid --memory "${MEMORY}" --cores "${CORES}"
 
