@@ -59,7 +59,6 @@ runcmd:
   - sed -i 's|#DNSStubListener=yes|DNSStubListener=no|' /etc/systemd/resolved.conf 
   - rm /etc/resolv.conf
   - ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
-  - touch /home/$CLOUD_INIT_USERNAME/.sudo_as_admin_successful
   - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id
   - ln -s /etc/machine-id  /var/lib/dbus/machine-id
@@ -73,7 +72,8 @@ runcmd:
   - mkdir bin
   - cd bin
   - git clone https://github.com/jamiesmith/findgrep.git
-#  - chown -R $CLOUD_INIT_USERNAME:$CLOUD_INIT_USERNAME /home/$CLOUD_INIT_USERNAME/
+  - chown -R $CLOUD_INIT_USERNAME:$CLOUD_INIT_USERNAME /home/$CLOUD_INIT_USERNAME/
+  - touch /home/$CLOUD_INIT_USERNAME/.sudo_as_admin_successful
 
 network:
   version: 2
