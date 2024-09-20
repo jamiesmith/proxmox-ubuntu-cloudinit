@@ -19,6 +19,7 @@ then
     echo 'GITHUB_PUBLIC_KEY_USERNAME=' >> .cloudimage.env
 
     echo "please edit the .cloudimage.env file and then rerun the same command to create the template VM"
+    echo "DON'T FORGET TO CHANGE THE PASSWORD"
     exit 1
 fi
 
