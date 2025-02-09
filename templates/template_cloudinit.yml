@@ -28,18 +28,28 @@ package_reboot_if_required: false
 packages:
   - bash-completion
   - btop
+  - chromium-browser
   - curl
+  - dnsutils
   - emacs
   - git
   - htop 
+  - hwloc
+  - iperf3
   - iputils-ping
   - jq
   - libpam-systemd
+  - linux-image-extra-virtual
   - make
   - nano
   - net-tools
+  - openssh-server
+  - python3
+  - python3-pip
   - qemu-guest-agent
+  - rig
   - rsync
+  - silversearcher-ag
   - ssh-import-id
   - strace
   - sudo
@@ -53,6 +63,8 @@ runcmd:
   - apt-get purge snapd -y
   - apt-get autoremove -y
   - apt-get autoclean -y
+  - apt-get update -y
+  - apt-get upgrade -y
   - systemctl enable unattended-upgrades.service
   - systemctl start unattended-upgrades.service
   - systemctl daemon-reload
@@ -65,7 +77,7 @@ runcmd:
   - fstrim -av
   - cd /home/$CLOUD_INIT_USERNAME/
   - git clone https://github.com/jamiesmith/UnixEnv.git
-  - rm .profile .bashrc
+  - rm -f .profile .bashrc
   - cd UnixEnv
   - ./link-env.sh /home/$CLOUD_INIT_USERNAME/
   - cd /home/$CLOUD_INIT_USERNAME/

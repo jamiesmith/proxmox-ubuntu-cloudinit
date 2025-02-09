@@ -10,7 +10,7 @@ function die_usage
 }
 
 
-hosts="kirk spock bones"
+hosts="kirk spock bones picard"
 
 for host in $hosts
 do
